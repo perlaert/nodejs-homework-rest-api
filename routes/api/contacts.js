@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { listContacts, getContactById, removeContact, addContact, updateContact } = require("../../model/index");
+const { validateContactsCreate, validateContactsUpdate } = require("./validate");
 
 router.get("/", async (req, res, next) => {
   try {
@@ -41,10 +42,9 @@ router.get("/:contactId", async (req, res, next) => {
   }
 });
 
-router.post("/", async (req, res, next) => {
+router.post("/", validateContactsCreate, async (req, res, next) => {
   try {
-    const { body } = req;
-    const newContact = await addContact(body);
+    const newContact = await addContact(req.body);
     res.status(201).json({
       status: "success",
       code: 201,
@@ -79,11 +79,10 @@ router.delete("/:contactId", async (req, res, next) => {
   }
 });
 
-router.put("/:contactId", async (req, res, next) => {
+router.put("/:contactId", validateContactsUpdate, async (req, res, next) => {
   try {
-    const { body } = req;
     const { contactId } = req.params;
-    const upDateContact = await updateContact(contactId, body);
+    const upDateContact = await updateContact(contactId, req.body);
     if (!upDateContact) {
       res.status(404).json({
         status: "error",
