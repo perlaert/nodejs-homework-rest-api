@@ -20,6 +20,13 @@ const schemaUpdateFavorite = Joi.object({
   favorite: Joi.boolean().required(),
 });
 
+const schemaUser = Joi.object({
+  email: Joi.string()
+    .email({ minDomainSegments: 2, tlds: { allow: ["com", "net", "gmail", "ru", "io"] } })
+    .required(),
+  password: Joi.string().min(6).required(),
+});
+
 const validate = async (schema, obj, next) => {
   try {
     await schema.validateAsync(obj);
@@ -44,5 +51,9 @@ module.exports = {
 
   validateFavoriteUpdate: (req, res, next) => {
     return validate(schemaUpdateFavorite, req.body, next);
+  },
+
+  validateUser: (req, res, next) => {
+    return validate(schemaUser, req.body, next);
   },
 };
