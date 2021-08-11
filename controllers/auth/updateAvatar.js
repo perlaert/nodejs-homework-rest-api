@@ -26,7 +26,7 @@ const updateAvatar = async (req, res, next) => {
       .cover(250, 250, jimp.HORIZONTAL_ALIGN_CENTER || jimp.VERTICAL_ALIGN_MIDDLE)
       .writeAsync(tempName);
 
-    fs.rename(tempName, userFile);
+    await fs.rename(tempName, userFile);
 
     const updateUserAvatar = {
       avatarURL: userFile,
