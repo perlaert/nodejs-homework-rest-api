@@ -27,6 +27,12 @@ const schemaUser = Joi.object({
   password: Joi.string().min(6).required(),
 });
 
+const shemaUserRepeatVerify = Joi.object({
+  email: Joi.string()
+    .email({ minDomainSegments: 2, tlds: { allow: ["com", "net", "gmail", "ru", "io"] } })
+    .required(),
+});
+
 const validate = async (schema, obj, next) => {
   try {
     await schema.validateAsync(obj);
@@ -55,5 +61,9 @@ module.exports = {
 
   validateUser: (req, res, next) => {
     return validate(schemaUser, req.body, next);
+  },
+
+  validateRepeatVerify: (req, res, next) => {
+    return validate(shemaUserRepeatVerify, req.body, next);
   },
 };
